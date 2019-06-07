@@ -1,0 +1,81 @@
+{% extends "library/base.html" %}
+{% load staticfiles %}
+{% block title %}搜索{% endblock %}
+
+{% block content %}
+
+
+    <div class="container col-md-8 col-md-offset-2">
+
+        <div class="container">
+            <form action="/searchmovie" method="GET">
+                <div class="row col-md-7 col-md-offset-1">
+
+                    {% for radio in movieSearchForm.search_by %}
+                        <div class="radio-inline">
+                            {{ radio }}
+                        </div>
+                    {% endfor %}
+
+                    <div class="input-group">
+                        {{ movieSearchForm.keyword }}
+                        <span class="input-group-btn">
+                        <button class="btn btn-default btn-lg btn-info" type="submit">电影搜索</button>
+                    </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!--<h2 id='hint' class="label-success col-md-5 col-md-offset-2">以下是{{ search_by }}匹配'{{ keyword }}'的结果</h2>-->
+        <table class="table table-hover">
+            <thead>
+            <th>#</th>
+            <th>电影封面</th>
+            <th>标题</th>
+            <th>评分</th>
+            <th>豆掰详情</th>
+            <th>电影简介</th>
+            </thead>
+            <tbody>
+            {% for movie in movies %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                            <img src="/media/{{ movie.image }}" alt="{{ movie.title }}"style="width: 170px">
+                    </td>
+                    <td style="width: 100px">{{ movie.title }}</td>
+                    <td>{{ movie.rate }}</td>
+                    <td>{{ movie.movie_url }}</td>
+                    <td>{{ movie.info }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td>暂无电影</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <nav class="myContainer">
+            <ul class="pager">
+                {% if movies.has_previous %}
+                    <li class="previous"><a
+                            href="{{ current_path }}&page={{ movies.previous_page_number }}#hint">上一页</a>
+                    </li>
+                {% else %}
+                    <li class="previous disabled"><a href="#">上一页</a></li>
+                {% endif %}
+                第 {{ movies.number }} / {{ movies.paginator.num_pages }}页
+                {% if movies.has_next %}
+                    <li class="next"><a
+                            href="{{ current_path }}&page={{ movies.next_page_number }}#hint">下一页</a>
+                    </li>
+                {% else %}
+                    <li class="next disabled"><a href="#">下一页</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+{% endblock %}
